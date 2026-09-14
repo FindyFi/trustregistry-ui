@@ -323,14 +323,6 @@
               contact.value = contact.value || fedEntity.contacts?.join(', ') || ''
               policy.value = policy.value || fedEntity.policy_uri || ''
             }
-            const fedEntity = data.metadata.federation_entity
-            if (fedEntity) {
-              orgName.value = orgName.value || fedEntity.organization_name || ''
-              logo.value = logo.value || fedEntity.logo_uri || ''
-              homepage.value = homepage.value || fedEntity.homepage_uri || ''
-              contact.value = contact.value || fedEntity.contacts?.join(', ') || ''
-              policy.value = policy.value || fedEntity.policy_uri || ''
-            }
           }
         }
       } catch (e) {
