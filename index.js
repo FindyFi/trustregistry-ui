@@ -142,7 +142,7 @@ app.get('/api/tenants', async (req, res) => {
     for (const acc of accounts) {
       const metadata = await oidf.getMetadata(acc.username)
       const fedEntity = metadata.find(m => m.key === 'federation_entity')
-      acc.name = fedEntity?.metadata?.organization_name || null
+      acc.name = fedEntity?.metadata?.display_name || fedEntity?.metadata?.organization_name || fedEntity?.identifier
     }
     res.json(accounts)
   } catch (e) {
@@ -235,9 +235,9 @@ app.post('/api/subordinates', async (req, res) => {
     if (!identifier) {
       results.identifierError = 'identifier is required in the request body'
     }
-    const name = json.metadata?.federation_entity?.organization_name
+    const name = json.metadata?.federation_entity?.display_name
     if (!name) {
-      results.nameError = 'metadata.federation_entity.organization_name is required in the request body'
+      results.nameError = 'metadata.federation_entity.display_name is required in the request body'
     }
     if (results.identifierError || results.nameError) {
       throw new Error(JSON.stringify(results))
