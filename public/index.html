@@ -75,7 +75,7 @@
       <tr>
        <th role="columnheader">#</th>
        <th role="columnheader" lang="en"
-         title="Organization name in the OpenID Federation Entity Configuration metadata">Name</th>
+         title="Display name in the OpenID Federation Entity Configuration metadata">Name</th>
        <th role="columnheader" lang="en" class="col-config"
          title="Entity Configuration published by the entity">Config</th>
        <th role="columnheader" lang="en" class="col-stmt"
@@ -106,24 +106,40 @@
       <input id="identifier" type="url" placeholder="https://example.com" pattern="https://.*" value="" required>
      </div>
      <div class="form-group">
-      <label for="name" lang="en">Name</label>
-      <input id="name" type="text" value="">
+      <label for="display-name" lang="en" title="A human-readable name of the Entity to be presented to the End-User">Display Name</label>
+      <input id="display-name" type="text" value="" title="A human-readable name of the Entity to be presented to the End-User">
      </div>
      <div class="form-group">
-      <label for="logo" lang="en">Logo URI</label>
-      <input id="logo" type="url" value="">
+      <label for="description" lang="en" title="A human-readable brief description of this Entity presentable to the End-User">Description</label>
+      <input id="description" type="text" value="" title="A human-readable brief description of this Entity presentable to the End-User">
      </div>
      <div class="form-group">
-      <label for="homepage" lang="en">Homepage</label>
-      <input id="homepage" type="url" value="">
+      <label for="logo" lang="en" title="A URL that points to the logo of this Entity. The file containing the logo SHOULD be published in a format that can be viewed via the web">Logo URI</label>
+      <input id="logo" type="url" value="" title="A URL that points to the logo of this Entity. The file containing the logo SHOULD be published in a format that can be viewed via the web">
      </div>
      <div class="form-group">
-      <label for="contact" lang="en">Contacts</label>
-      <input id="contact" type="text" value="">
+      <label for="org-name" lang="en" title="A human-readable name representing the organization owning this Entity. If the owner is a physical person, this MAY be, for example, the person's name. Note that this information will be publicly available">Name</label>
+      <input id="org-name" type="text" value="" title="A human-readable name representing the organization owning this Entity. If the owner is a physical person, this MAY be, for example, the person's name. Note that this information will be publicly available">
      </div>
      <div class="form-group">
-      <label for="policy" lang="en">Policy URI</label>
-      <input id="policy" type="url" value="">
+      <label for="organization-uri" lang="en" title="URL of a Web page for the organization owning this Entity">Organization URI</label>
+      <input id="organization-uri" type="url" value="" title="URL of a Web page for the organization owning this Entity">
+     </div>
+     <div class="form-group">
+      <label for="information-uri" lang="en" title="URL for documentation of additional information about this Entity viewable by the End-User">Information URI</label>
+      <input id="information-uri" type="url" value="" title="URL for documentation of additional information about this Entity viewable by the End-User">
+     </div>
+     <div class="form-group">
+      <label for="keywords" lang="en" title="Comma-separated array with one or more strings representing search keywords, tags, categories, or labels that apply to this Entity">Keywords</label>
+      <input id="keywords" type="text" value="" title="Comma-separated array with one or more strings representing search keywords, tags, categories, or labels that apply to this Entity">
+     </div>
+     <div class="form-group">
+      <label for="contact" lang="en" title="Comma-separated array with one or more strings representing contact persons at the Entity. These MAY contain names, e-mail addresses, descriptions, phone numbers, etc">Contacts</label>
+      <input id="contact" type="text" value="" title="Comma-separated array with one or more strings representing contact persons at the Entity. These MAY contain names, e-mail addresses, descriptions, phone numbers, etc">
+     </div>
+     <div class="form-group">
+      <label for="policy" lang="en" title="URL of the documentation of conditions and policies relevant to this Entity">Policy URI</label>
+      <input id="policy" type="url" value="" title="URL of the documentation of conditions and policies relevant to this Entity">
      </div>
      <div class="form-group">
       <div class="form-label" lang="en">Roles</div>
@@ -272,9 +288,13 @@
     const closeDrawerBtn = document.getElementById('close-drawer')
     const identifier = document.getElementById('identifier')
     const hiddenId = document.getElementById('id')
-    const orgName = document.getElementById('name')
+    const displayName = document.getElementById('display-name')
+    const description = document.getElementById('description')
     const logo = document.getElementById('logo')
-    const homepage = document.getElementById('homepage')
+    const orgName = document.getElementById('org-name')
+    const orgUri = document.getElementById('organization-uri')
+    const infoUri = document.getElementById('information-uri')
+    const keywords = document.getElementById('keywords')
     const contact = document.getElementById('contact')
     const policy = document.getElementById('policy')
     const jwksInput = document.getElementById('jwks')
@@ -324,9 +344,13 @@
             for (const key in data.metadata) setMetadata(key, data.metadata[key])
             const fedEntity = data.metadata.federation_entity
             if (fedEntity) {
-              orgName.value = orgName.value || fedEntity.organization_name || ''
+              displayName.value = displayName.value || fedEntity.display_name || ''
+              description.value = description.value || fedEntity.description || ''
               logo.value = logo.value || fedEntity.logo_uri || ''
-              homepage.value = homepage.value || fedEntity.homepage_uri || ''
+              orgName.value = orgName.value || fedEntity.organization_name || ''
+              orgUri.value = orgUri.value || fedEntity.organization_uri || ''
+              infoUri.value = infoUri.value || fedEntity.information_uri || ''
+              keywords.value = keywords.value || fedEntity.keywords?.join(', ') || ''
               contact.value = contact.value || fedEntity.contacts?.join(', ') || ''
               policy.value = policy.value || fedEntity.policy_uri || ''
             }
@@ -337,7 +361,7 @@
       }
     }
 
-    orgName.onchange = logo.onchange = homepage.onchange = contact.onchange = policy.onchange = updateFederationEntity
+    orgName.onchange = displayName.onchange = description.onchange = logo.onchange = orgUri.onchange = infoUri.onchange = keywords.onchange = contact.onchange = policy.onchange = updateFederationEntity
 
     const boxes = addForm.querySelectorAll('input[name="metadatakey"]')
     for (const box of boxes) {
@@ -364,9 +388,13 @@
 
     function updateFederationEntity() {
       setMetadata('federation_entity', {
-        organization_name: orgName.value || '',
+        display_name: displayName.value || '',
+        description: description.value || '',
         logo_uri: logo.value || '',
-        homepage_uri: homepage.value || '',
+        organization_name: orgName.value || '',
+        organization_uri: orgUri.value || '',
+        information_uri: infoUri.value || '',
+        keywords: keywords.value.replace(/,\s+/, ',').split(',') || '',
         contacts: contact.value.replace(/,\s+/, ',').split(',') || '',
         policy_uri: policy.value || ''
       })
@@ -484,7 +512,7 @@
             const resp = await fetch(stmtUrl)
             if (resp.ok) meta = await resp.json()
 
-            const subName = subordinate?.metadata?.federation_entity?.organization_name || subordinate.identifier
+            const subName = subordinate?.metadata?.federation_entity?.display_name || subordinate?.metadata?.federation_entity?.organization_name || subordinate.identifier
             list.appendChild(tr)
 
             const id = document.createElement('th')
@@ -549,9 +577,13 @@
               hiddenId.value = subordinate.id
               identifier.value = subordinate.identifier
               identifier.disabled = true
-              orgName.value = subordinate?.metadata?.federation_entity?.organization_name || ''
+              displayName.value = subordinate?.metadata?.federation_entity?.display_name || ''
+              description.value = subordinate?.metadata?.federation_entity?.description || ''
               logo.value = subordinate?.metadata?.federation_entity?.logo_uri || ''
-              homepage.value = subordinate?.metadata?.federation_entity?.homepage_uri || ''
+              orgName.value = subordinate?.metadata?.federation_entity?.organization_name || ''
+              orgUri.value = subordinate?.metadata?.federation_entity?.organization_uri || ''
+              infoUri.value = subordinate?.metadata?.federation_entity?.information_uri || ''
+              keywords.value = subordinate?.metadata?.federation_entity?.keywords?.join(', ') || ''
               contact.value = subordinate?.metadata?.federation_entity?.contacts?.join(', ') || ''
               policy.value = subordinate?.metadata?.federation_entity?.policy_uri || ''
               if (subordinate?.metadata?.roles) {

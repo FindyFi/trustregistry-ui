@@ -38,17 +38,56 @@
     "Name": {
         "fi": "Nimi"
     },
+    "Display Name": {
+        "fi": "Näyttönimi"
+    },
+    "Description": {
+        "fi": "Kuvaus"
+    },
     "Logo URI": {
         "fi": "Logon osoite"
     },
-    "Homepage": {
-        "fi": "Kotisivu"
+    "Organization URI": {
+        "fi": "Organisaation osoite"
+    },
+    "Information URI": {
+        "fi": "Lisätietojen osoite"
+    },
+    "Keywords": {
+        "fi": "Avainsanat"
     },
     "Contacts": {
         "fi": "Yhteystiedot"
     },
     "Policy URI": {
         "fi": "Sääntökirjan osoite"
+    },
+    "A human-readable name of the Entity to be presented to the End-User": {
+        "fi": "Ihmisluettava nimi, joka näytetään loppukäyttäjälle"
+    },
+    "A human-readable brief description of this Entity presentable to the End-User": {
+        "fi": "Lyhyt, ihmisluettava kuvaus, joka voidaan näyttää loppukäyttäjälle"
+    },
+    "A URL that points to the logo of this Entity. The file containing the logo SHOULD be published in a format that can be viewed via the web": {
+        "fi": "URL-osoite jäsenen logoon. Logotiedosto tulisi julkaista muodossa, jota voi katsella verkkoselaimella."
+    },
+    "A human-readable name representing the organization owning this Entity. If the owner is a physical person, this MAY be, for example, the person's name. Note that this information will be publicly available": {
+        "fi": "Jäsenen omistavan organisaation ihmisluettava nimi. Jos omistaja on luonnollinen henkilö, tämä voi olla esimerkiksi kyseisen henkilön nimi. Huomaa, että tämä tieto on julkisesti nähtävissä"
+    },
+    "URL of a Web page for the organization owning this Entity": {
+        "fi": "URL-osoite jäsenen omistavan organisaation kotisivulle"
+    },
+    "URL for documentation of additional information about this Entity viewable by the End-User": {
+        "fi": "Jäsenen lisätietojen URL-osoite"
+    },
+    "Comma-separated array with one or more strings representing search keywords, tags, categories, or labels that apply to this Entity": {
+        "fi": "Pilkuin eroteltu lista tähän organisaatioyksikköön liittyviä hakusanoja, tunnisteita, kategorioita tai luokitteluja"
+    },
+    "Comma-separated array with one or more strings representing contact persons at the Entity. These MAY contain names, e-mail addresses, descriptions, phone numbers, etc": {
+        "fi": "Pilkuin eroteltu lista jäsenen yhteyshenkilöitä. Nämä voivat sisältää nimiä, sähköpostiosoitteita, kuvauksia, puhelinnumeroita jne."
+    },
+    "URL of the documentation of conditions and policies relevant to this Entity": {
+        "fi": "URL-soite, josta löytyvät tämän jäsenen käyttöehdot, tietosuojapolitiikka ym. dokumentaatio."
     },
     "Role": {
         "fi": "Rooli"
