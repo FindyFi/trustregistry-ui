@@ -49,7 +49,7 @@
    </div>
    <div class="header-right">
     <div id="tenant-area" hidden>
-     <label for="tenant-select" lang="en">Tenant:</label>
+     <label for="tenant-select"><span lang="en">Tenant:</span></label>
      <select id="tenant-select">
       <option value="" lang="en">All tenants</option>
      </select>
@@ -57,7 +57,7 @@
     <translate-element src="./translations.json"></translate-element>
     <div id="user-info" hidden>
      <span id="logged-in-as"></span>
-     <button id="logout-btn" type="button" class="btn-ghost" lang="en">Logout</button>
+     <button id="logout-btn" type="button" class="btn-ghost"><span lang="en">Logout</span></button>
     </div>
    </div>
   </header>
@@ -168,8 +168,12 @@
      </div>
     </fieldset>
    </div>
+   <p id="add-error" class="error" hidden></p>
    <div class="drawer-footer">
-    <button type="submit" id="submit" class="btn btn-primary"><span lang="en">Add</span></button>
+    <button type="submit" id="submit" class="btn btn-primary">
+     <span class="spinner" id="submit-spinner" hidden></span>
+     <span lang="en">Add</span>
+    </button>
     <button type="button" id="cancel" class="btn btn-outline"><span lang="en">Cancel</span></button>
    </div>
   </form>
@@ -192,7 +196,8 @@
       const resp = await fetch('./api/tenants')
       if (!resp.ok) return
       const tenants = await resp.json()
-      while (tenantSelect.options.length > 1) tenantSelect.remove(1)
+      const opts = tenantSelect.querySelectorAll('option[value]:not([value=""])')
+      opts.forEach(opt => opt.remove())
       for (const t of tenants) {
         const opt = document.createElement('option')
         opt.value = t.username
@@ -286,6 +291,7 @@
       drawerTitle.textContent = 'Add subordinate'
       addForm.classList.add('shown')
       overlay.classList.add('active')
+      addError.hidden = true
     }
 
     function closeDrawer() {
@@ -298,6 +304,7 @@
       identifier.disabled = false
       addForm.reset()
       updateFederationEntity()
+      addError.hidden = true
     }
 
     closeDrawerBtn.onclick = closeDrawer
@@ -393,8 +400,12 @@
       }).join('')))
     }
 
+    const addError = document.getElementById('add-error')
+    const submitSpinner = document.getElementById('submit-spinner')
+
     addForm.onsubmit = async function (e) {
       e.preventDefault()
+      addError.hidden = true
       const roles = {}
       for (const box of addForm.querySelectorAll('input[name="metadatakey"]')) {
         if (box.checked) roles[box.id] = box.value
@@ -418,15 +429,31 @@
         body.tenant = selectedTenant
         params.body = JSON.stringify(body)
       }
+      submitBtn.disabled = true
+      submitSpinner.hidden = false
       try {
         const resp = await fetch(addUrl, params)
         if (resp.ok) {
-          console.log(await resp.json(), null, 1)
           closeDrawer()
           getList()
+        } else {
+          let message = 'Failed to save subordinate.'
+          try {
+            const err = await resp.json()
+            message = err.error || message
+          } catch (e) {
+            console.error(e)
+          }
+          addError.textContent = message
+          addError.hidden = false
         }
       } catch (e) {
         console.error(e)
+        addError.textContent = 'Failed to save subordinate: ' + e.message
+        addError.hidden = false
+      } finally {
+        submitBtn.disabled = false
+        submitSpinner.hidden = true
       }
     }
 
@@ -498,8 +525,10 @@
             mod.className = 'modify'
             const ea = document.createElement('button')
             ea.type = 'button'
-            ea.textContent = 'Edit'
-            ea.lang = 'en'
+            const eSpan = document.createElement('span')
+            eSpan.lang = 'en'
+            eSpan.textContent = 'Edit'
+            ea.appendChild(eSpan)
             ea.className = 'btn-icon edit'
             ea.onclick = async function (e) {
               e.preventDefault()
@@ -534,8 +563,10 @@
             del.className = 'delete'
             const da = document.createElement('button')
             da.type = 'button'
-            da.textContent = 'Delete'
-            da.lang = 'en'
+            const daSpan = document.createElement('span')
+            daSpan.lang = 'en'
+            daSpan.textContent = 'Delete'
+            da.appendChild(daSpan)
             da.className = 'btn-icon delete'
             da.onclick = function (e) {
               e.preventDefault()

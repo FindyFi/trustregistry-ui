@@ -108,6 +108,10 @@ main {
   display: inline-block;
   border: 1.5px solid transparent;
 }
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
 
 .btn-primary {
   background: var(--color-primary);
@@ -429,6 +433,31 @@ td.modify, td.delete { text-align: center; white-space: nowrap; width: 5rem; }
   border-top: 1px solid var(--color-border);
   flex-shrink: 0;
   background: var(--color-surface);
+}
+
+#add-error {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0.75rem 1.5rem 0;
+}
+
+.spinner {
+  display: inline-block;
+  width: 0.9375rem;
+  height: 0.9375rem;
+  margin-right: 0.5rem;
+  vertical-align: -2px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.spinner[hidden] {
+  display: none;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* ─── Login screen ─── */
