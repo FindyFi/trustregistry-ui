@@ -265,8 +265,11 @@ app.post('/api/subordinates', async (req, res) => {
       results['New account'] = acc
     }
 
-    const key = await oidf.createKey(randomUUID(), 'ES256', acc.username)
-    results['New key'] = key
+    if (!json.jwks || json.jwks.length === 0) {
+      const key = await oidf.createKey(randomUUID(), 'ES256', acc.username)
+      results['New key'] = key
+      json.jwks = [key]
+    }
 
     const hint = await oidf.addAuthorityHint(publicUrl, acc.username)
     results['Added authority hint'] = hint
