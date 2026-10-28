@@ -40,7 +40,8 @@ app.use(session({
 // --- Auth routes (no login required) ---
 
 app.post('/api/auth/login', async (req, res) => {
-  const {username, password} = req.body
+  const {password} = req.body
+  const username = req.body.username?.trim()
   if (!username || !password) {
     return res.status(400).json({error: 'username and password are required'})
   }
@@ -98,7 +99,9 @@ app.get('/api/users', async (req, res) => {
 
 app.post('/api/users', async (req, res) => {
   if (!req.session.isAdmin) return res.status(403).json({error: 'Forbidden'})
-  const {username, password, tenant_username, is_admin} = req.body
+  const {password, is_admin} = req.body
+  const username = req.body.username?.trim()
+  const tenant_username = req.body.tenant_username?.trim()
   if (!username || !password) return res.status(400).json({error: 'username and password are required'})
   if (!is_admin && !tenant_username) return res.status(400).json({error: 'tenant_username is required for non-admin users'})
   try {
@@ -231,7 +234,7 @@ app.post('/api/subordinates', async (req, res) => {
     // console.log('adding a subordinate', JSON.stringify(json, null, 1))
     const results = {}
 
-    const identifier = json.identifier
+    const identifier = json.identifier?.trim()
     if (!identifier) {
       results.identifierError = 'identifier is required in the request body'
     }
@@ -302,6 +305,7 @@ app.put('/api/subordinates/:id', async (req, res) => {
     const json = req.body
     // console.log(`modifying the subordinate ${subId}`, JSON.stringify(json, null, 1))
     const results = {}
+    json.identifier = json.identifier?.trim()
     let acc = await getAccountByIdentifier(oidf, json.identifier)
     console.log('Existing account for identifier', json.identifier, acc)
     if (!acc) {
@@ -503,12 +507,21 @@ async function addPolicy(oidf) {
   return await oidf.createMetadataPolicy(entry)
 }
 
+function trimStrings(value) {
+  if (typeof value === 'string') return value.trim()
+  if (Array.isArray(value)) return value.map(trimStrings)
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, trimStrings(v)]))
+  }
+  return value
+}
+
 async function addMetadata(oidf, metadata, name, subId) {
   const results = {}
   for (const key in metadata) {
     const entry = {
       key: key,
-      metadata: metadata[key]
+      metadata: trimStrings(metadata[key])
     }
     results[key] = await oidf.createMetadata(entry, name)
     if (subId) {

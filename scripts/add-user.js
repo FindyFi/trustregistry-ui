@@ -12,6 +12,8 @@ const {values} = parseArgs({
   },
   strict: false,
 })
+values.username = values.username?.trim()
+values.tenant = values.tenant?.trim()
 
 if (!values.username || !values.password) {
   console.error('Usage: node scripts/add-user.js --username <u> --password <p> [--tenant <tenant-username>] [--admin]')

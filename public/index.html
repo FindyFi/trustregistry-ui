@@ -261,7 +261,7 @@
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-          username: document.getElementById('login-username').value,
+          username: document.getElementById('login-username').value.trim(),
           password: document.getElementById('login-password').value,
         })
       })
@@ -334,6 +334,7 @@
     }
 
     identifier.onchange = async function (e) {
+      this.value = this.value.trim()
       const confUrl = `./api/proxy/${encodeURIComponent(this.value.replace(/\/$/, '') + '/.well-known/openid-federation')}`
       try {
         const confResp = await fetch(confUrl, {headers: {Accept: 'application/json'}})
@@ -388,15 +389,15 @@
 
     function updateFederationEntity() {
       setMetadata('federation_entity', {
-        display_name: displayName.value || '',
-        description: description.value || '',
-        logo_uri: logo.value || '',
-        organization_name: orgName.value || '',
-        organization_uri: orgUri.value || '',
-        information_uri: infoUri.value || '',
-        keywords: keywords.value.replace(/,\s+/, ',').split(',') || '',
-        contacts: contact.value.replace(/,\s+/, ',').split(',') || '',
-        policy_uri: policy.value || ''
+        display_name: displayName.value.trim(),
+        description: description.value.trim(),
+        logo_uri: logo.value.trim(),
+        organization_name: orgName.value.trim(),
+        organization_uri: orgUri.value.trim(),
+        information_uri: infoUri.value.trim(),
+        keywords: keywords.value.split(',').map(s => s.trim()).filter(Boolean),
+        contacts: contact.value.split(',').map(s => s.trim()).filter(Boolean),
+        policy_uri: policy.value.trim()
       })
     }
 
@@ -451,7 +452,7 @@
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-          identifier: this.identifier.value,
+          identifier: this.identifier.value.trim(),
           roles: roles,
           jwks: JSON.parse(this.jwks.value),
           metadata: JSON.parse(this.metadata.value)
