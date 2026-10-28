@@ -415,13 +415,14 @@ td.modify, td.delete { text-align: center; white-space: nowrap; width: 5rem; }
   color: var(--color-primary);
 }
 
-.role-chip-label input[type="checkbox"]:checked + .role-chip {
+/* ~ rather than +: translate-element inserts translated chip clones after the original */
+.role-chip-label input[type="checkbox"]:checked ~ .role-chip {
   background: var(--color-primary);
   border-color: var(--color-primary);
   color: #fff;
 }
 
-.role-chip-label:hover input[type="checkbox"]:checked + .role-chip {
+.role-chip-label:hover input[type="checkbox"]:checked ~ .role-chip {
   background: var(--color-medium);
   border-color: var(--color-medium);
 }
